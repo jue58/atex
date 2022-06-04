@@ -1,27 +1,57 @@
-require 'redis'
 require 'json'
-require 'discordrb'
+require './lib/atex_db'
+require './lib/discord_bot'
 
-redis = Redis.new(host: 'redis')
-
-name_list = redis
-  .lrange('roster', 0, -1)
-  .map do |v|
-    r = JSON.parse(v)
-    r['name']
-  end
-
-p name_list
-
-unless name_list.empty?
-  roster = name_list.map{|v| "- #{v}\n"}.join
-  message = <<EOS
-今回の参加者
-
-#{roster}
-EOS
-  bot = Discordrb::Bot.new(token: ENV['DISCORD_TOKEN'])
-  bot.send_message(ENV['DISCORD_CHANNEL'], message)  
+def get_roster(db, &block)
+  block.call(db.get_roster.map{|v| JSON.parse(v)})
+ensure
+  db.del_roster
 end
 
-redis.del('roster')
+def send_roster(roster, bot)
+  name_list = roster.map{|v| v['name']}
+
+  p "name_list: #{name_list}"
+
+  unless name_list.empty?
+    roster_str = name_list.map{|v| "- #{v}\n"}.join
+    message = <<EOS
+----------------------------------------------------
+今回の参加者
+
+#{roster_str}
+EOS
+    bot.send_message(message)
+  end
+end
+
+def send_stars(db, roster, bot)
+  name_list = roster.map{|v| v['name']}
+  matched_stars = db.match_stars(name_list)
+
+  p "matched_stars: #{matched_stars}"    
+
+  star_result = name_list.zip(matched_stars).to_h.compact
+  unless star_result.empty?
+    result_str = star_result.map{|k, v| "#{k} => #{v}\n"}.join
+    message2 = <<EOS
+----------------------------------------------------
+もしかしたらこの人とマッチしてるかも...？
+
+#{result_str}
+EOS
+    bot.send_message(message2)
+  end
+end
+
+#################################################
+# kokokara                                      #
+#################################################
+db = AtexDB.new
+
+get_roster(db) do |roster|
+  bot = DiscordBot.new(token: ENV['DISCORD_TOKEN'], channel: ENV['DISCORD_CHANNEL'])
+
+  send_roster(roster, bot)
+  send_stars(db, roster, bot)
+end
