@@ -1,0 +1,13 @@
+services:
+  log_parser:
+    image: log_parser:latest
+    volumes:
+      - "..\\..\\AppData\\Local\\Overwolf\\Log\\Apps\\Apex Legends Tracker:/log"
+      - ".\\log_parser\\fluent.conf:/fluentd/etc/fluent.conf"
+  message_bot:
+    image: message_bot:latest
+    environment:
+      - DISCORD_TOKEN=${DISCORD_TOKEN}
+      - DISCORD_CHANNEL=${DISCORD_CHANNEL}
+  redis:
+    image: redis:latest
