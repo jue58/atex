@@ -3,7 +3,7 @@ services:
     image: log_parser:latest
     volumes:
       - "..\\..\\AppData\\Local\\Overwolf\\Log\\Apps\\Apex Legends Tracker:/log"
-      - ".\\log_parser\\fluent.conf:/fluentd/etc/fluent.conf"
+      #- ".\\log_parser\\fluent.conf:/fluentd/etc/fluent.conf"
   message_bot:
     image: message_bot:latest
     environment:

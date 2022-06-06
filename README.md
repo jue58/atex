@@ -16,7 +16,7 @@ Apex Legends Trackerのログを見る。
 - Atexのルートディレクトリに.envファイルを作成。
   - 参考: .env.template
 - Atexのルートディレクトリで以下を実行
-  - `docker build -t log_parser .\log_perser\`
+  - `docker build -t log_parser .\log_parser\`
   - `docker build -t message_bot .\message_bot\`
 
 ### Execution
@@ -25,9 +25,16 @@ Apex Legends Trackerのログを見る。
 docker compose up -d
 ```
 
+#### Update database
+
+```
+docker compose exec message_bot ./stars.sh
+```
+
 ## Features
 
-- 参加者一覧
+- マッチの参加者リストをDiscordに投稿
+- マッチに有名人のIDと一致する参加者がいることをDiscordに投稿
 
 ## Note
 - Apex Legends Trackerのログの場所は適当なので、必要ならdocker-compose.ymlを直接修正してください。
