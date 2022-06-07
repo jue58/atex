@@ -9,12 +9,13 @@ ensure
 end
 
 def send_roster(roster, bot)
-  name_list = roster.map{|v| v['name']}
-
-  p "name_list: #{name_list}"
+  teams = roster.group_by{|v| v['team_id']}
+  name_list = teams.map do |_, v|
+    v.map {|v| v['name']}
+  end
 
   unless name_list.empty?
-    roster_str = name_list.map{|v| "- #{v}\n"}.join
+    roster_str = name_list.map{|v| "- #{v.join(",  ")}\n"}.join
     message = <<EOS
 ----------------------------------------------------
 今回の参加者
@@ -51,7 +52,11 @@ db = AtexDB.new
 
 get_roster(db) do |roster|
   bot = DiscordBot.new(token: ENV['DISCORD_TOKEN'], channel: ENV['DISCORD_CHANNEL'])
+  
+  p "roster: #{roster}"
 
-  send_roster(roster, bot)
-  send_stars(db, roster, bot)
+  unless roster.empty?
+    send_roster(roster, bot)
+    send_stars(db, roster, bot)
+  end
 end

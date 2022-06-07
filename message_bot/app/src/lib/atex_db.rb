@@ -14,6 +14,6 @@ class AtexDB
   end
 
   def match_stars(name_list)
-    @r.hmget(:stars, *name_list)
+    @r.hmget(:stars, name_list)
   end
 end
