@@ -2,8 +2,8 @@ require 'json'
 require './lib/atex_db'
 require './lib/discord_bot'
 
-def get_roster(db, &block)
-  block.call(db.get_roster.map{|v| JSON.parse(v)})
+def get_roster(db)
+  yield(db.get_roster.map{|v| JSON.parse(v)})
 ensure
   db.del_roster
 end

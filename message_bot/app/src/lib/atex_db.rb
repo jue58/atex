@@ -13,6 +13,13 @@ class AtexDB
     @r.del(:roster)
   end
 
+  #
+  # stars: [key1, value1, key2, value2, ...]
+  #
+  def set_stars(stars)
+    @r.hmset(:stars, stars)
+  end
+  
   def match_stars(name_list)
     @r.hmget(:stars, name_list)
   end
