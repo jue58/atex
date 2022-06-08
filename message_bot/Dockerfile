@@ -10,4 +10,4 @@ COPY --chown=root:root ./crontab /var/spool/cron/crontabs/root
 
 RUN bundle install
 
-ENTRYPOINT ["/entrypoint.sh"]
+CMD ["/entrypoint.sh"]

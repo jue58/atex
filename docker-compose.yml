@@ -4,10 +4,16 @@ services:
     volumes:
       - "..\\..\\AppData\\Local\\Overwolf\\Log\\Apps\\Apex Legends Tracker:/log"
       #- ".\\log_parser\\fluent.conf:/fluentd/etc/fluent.conf"
+    depends_on:
+      - redis
   message_bot:
     image: message_bot:latest
     environment:
       - DISCORD_TOKEN=${DISCORD_TOKEN}
       - DISCORD_CHANNEL=${DISCORD_CHANNEL}
+    depends_on:
+      - redis
+    # volumes:
+    #   - ./message_bot/app:/app
   redis:
     image: redis:latest
