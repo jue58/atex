@@ -23,4 +23,8 @@ class AtexDB
   def match_stars(name_list)
     @r.hmget(:stars, name_list)
   end
+
+  def increment_encounter(name)
+    @r.hincrby(:encounter, name, 1).to_i
+  end
 end
