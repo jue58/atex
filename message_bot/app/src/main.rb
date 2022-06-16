@@ -8,10 +8,14 @@ ensure
   db.del_roster
 end
 
+def format_name(p)
+  p['encounter'] ? "#{p['name']} [#{p['encounter']}]" : p['name']
+end
+
 def send_roster(roster, bot)
   teams = roster.group_by{|v| v['team_id']}
-  name_list = teams.map do |_, v|
-    v.map {|v| v['name']}
+  name_list = teams.map do |_, t|
+    t.map {|p| format_name(p)}
   end
 
   unless name_list.empty?
@@ -56,6 +60,10 @@ get_roster(db) do |roster|
   p "roster: #{roster}"
 
   unless roster.empty?
+    roster.map do |v|
+      num = db.increment_encounter(v['name'])
+      v['encounter'] = num if num > 1
+    end
     send_roster(roster, bot)
     send_stars(db, roster, bot)
   end
