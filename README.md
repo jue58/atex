@@ -31,12 +31,6 @@ docker compose up -d
 docker compose exec message_bot ./stars.sh
 ```
 
-#### Import Custom List
-
-```
-docker compose exec redis /import_custom_list.sh
-```
-
 ## Features
 
 - マッチの参加者リストをDiscordに投稿
