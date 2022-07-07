@@ -3,7 +3,7 @@ services:
     image: log_parser:latest
     volumes:
       - "..\\..\\AppData\\Local\\Overwolf\\Log\\Apps\\Apex Legends Tracker:/log"
-      #- ".\\log_parser\\fluent.conf:/fluentd/etc/fluent.conf"
+      # - ./log_parser/fluent.conf:/fluentd/etc/fluent.conf
     depends_on:
       - redis
   message_bot:
@@ -14,9 +14,7 @@ services:
     depends_on:
       - redis
     # volumes:
+    #   - ./message_bot/custom_list.csv:/app/custom_list.csv
     #   - ./message_bot/app:/app
   redis:
     image: redis:latest
-    volumes:
-      - ./redis/import_custom_list.sh:/import_custom_list.sh
-      - ./redis/custom_list.txt:/custom_list
